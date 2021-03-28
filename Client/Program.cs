@@ -15,7 +15,7 @@ namespace BlazorRealTimeSignalR.Client
     {
         public static async Task Main(string[] args)
         {
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NDgzNUAzMTM4MmUzNDJlMzBFNTFZdHBJQkROTWFMWDQ1dlBoWlNMWERoditkeXlFQVIxcCtuYnc4VTJNPQ==");
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Your LicenseKey");
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.Services.AddSyncfusionBlazor();
             builder.RootComponents.Add<App>("#app");
