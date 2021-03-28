@@ -41,7 +41,7 @@ namespace BlazorRealTimeSignalR.Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NDgzNUAzMTM4MmUzNDJlMzBFNTFZdHBJQkROTWFMWDQ1dlBoWlNMWERoditkeXlFQVIxcCtuYnc4VTJNPQ==");
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Your LicenseKey");
 
 
             app.UseResponseCompression();
