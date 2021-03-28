@@ -1,0 +1,120 @@
+﻿@page "/"
+
+@using Syncfusion.Blazor.Layouts
+@using _Imports = BlazorRealTimeSignalR.Client._Imports
+@inject NavigationManager NavigationManager
+@implements IDisposable
+
+<div class="container">
+    <SfDashboardLayout @ref="_dashboard" ID="dashboard" CellSpacing="@(new double[]{10,10,})" Columns="6">
+        <DashboardLayoutEvents OnDragStop="DragStop"></DashboardLayoutEvents>
+        <DashboardLayoutPanels>
+            <DashboardLayoutPanel SizeX="2" Row="0" Col="0" CssClass="orange">
+                <ContentTemplate>
+                    <div class="card">
+                        <div class="card-content text">
+                            First Box
+                        </div>
+                    </div>
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+            <DashboardLayoutPanel SizeX="2" Row="0" Col="2" CssClass="blue">
+                <ContentTemplate>
+                    <div class="card">
+                        <div class="card-content text">
+                            Second Box
+                        </div>
+                    </div>
+                   
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+
+            <DashboardLayoutPanel SizeX="2" Row="0" Col="4" CssClass="green">
+                <ContentTemplate>
+                    <div class="card">
+                        <div class="card-content text">
+                            Third Box
+                        </div>
+                    </div>
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+            </DashboardLayoutPanels>
+    
+    </SfDashboardLayout>
+</div>
+@code
+{
+    SfDashboardLayout _dashboard;
+    HubConnection _connection;
+    private int _row;
+    int _col;
+    public void Dispose()
+    {
+        _ = _connection.DisposeAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _connection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/DashboardHub")).Build();
+        _connection.On<string, int, int>("LayoutChange", OnLayoutChange);
+        await _connection.StartAsync();
+    }
+
+    private Task OnLayoutChange(string arg1, int arg2, int arg3)
+    {
+        this._dashboard.MovePanelAsync(arg1, arg2, arg3);
+        return Task.CompletedTask;
+    }
+
+    private async Task DragStop(DragStopArgs arg)
+    {
+        var id = arg.Id;
+        var value = await this._dashboard.Serialize();
+        foreach (var t in value)
+        {
+            if (t.Id == id)
+            {
+                _row = t.Row;
+                _col = t.Column;
+            }
+        }
+        await _connection.InvokeAsync("DashboardDragAndDrop", id, _row, _col);
+    }
+}
+ 
+
+<style>
+
+    .card {
+        border: none;
+        background-color: inherit;
+        position: relative;
+    }
+    .card-content.text {
+        font-size: 24px;
+        text-align: center;
+        color: #fff;
+        padding: 8px 16px;
+        line-height: 102px;
+    }
+    #dashboard .e-panel.orange {
+        background-color: orange;
+    } 
+    #dashboard .e-panel.green {
+        background-color: green;
+    }
+    #dashboard .e-panel.blue {
+        background-color: blue;
+    }
+    .container {
+        width: 800px;
+        margin: 0;
+    }
+    @@media(max-width: 600px) {
+        .container {
+            flex: 1;
+            width: auto;
+        }
+    }
+
+</style>
